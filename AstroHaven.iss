@@ -45,7 +45,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Source: "domelist AstroHaven.txt"; DestDir: "{app}\Miscellaneous Files"; Flags: ignoreversion
 Source: "libAstroHaven\Release\libAstroHaven.dll"; DestDir: "{app}\Plugins\DomePlugIns"; Flags: ignoreversion
 Source: "AstroHaven.ui"; DestDir: "{app}\Plugins\DomePlugIns"; Flags: ignoreversion
-Source: "AstroHaven.png"; DestDir: "{app}\Plugins\DomePlugIns"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 ; msgBox('Do you want to install MyProg.exe to ' + ExtractFilePath(CurrentFileName) + '?', mbConfirmation, MB_YESNO)
 

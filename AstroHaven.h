@@ -42,7 +42,7 @@
 enum AstroHavenErrors {PluginOK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, COMMAND_FAILED};
 
 // Error code
-enum AstroHavenShutterState {OPEN=1, OPENING, CLOSED, CLOSING, UNKNOWN};
+enum AstroHavenShutterState {OPEN=1, OPENING, OPENING_A, OPENING_B, CLOSED, CLOSING, CLOSING_A, CLOSING_B, UNKNOWN};
 
 class CAstroHaven
 {
@@ -80,7 +80,7 @@ protected:
 
     int             readResponse(char *pszRespBuffer, unsigned int nBufferLen, int TimeOut = MAX_TIMEOUT);
     int             domeCommand(const char *pszCmd, char *pszResult, int nResultMaxLen);
-    int             getShutterState(int &nState);
+    int             setShutterStateToClosed();
     
     SleeperInterface    *m_pSleeper;
 
@@ -91,6 +91,7 @@ protected:
 
     int             m_nASideState;
     int             m_nBSideState;
+	int             m_nCurrentShutterAction;
 
     SerXInterface   *m_pSerx;
 
