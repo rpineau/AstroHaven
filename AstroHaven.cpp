@@ -44,7 +44,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_08_21_1320.\n", timestamp);
+    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_4_1620.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -159,9 +159,6 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, int 
         ulTotalBytesRead += ulBytesRead;
     } while (*pszBufPtr++ != 0x00 && ulTotalBytesRead < nBufferLen );
 
-    if(ulTotalBytesRead)
-        *(pszBufPtr-1) = 0; //remove the \r
-
     return nErr;
 }
 
@@ -172,7 +169,6 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     char szResp[SERIAL_BUFFER_SIZE];
     unsigned long  nBytesWrite;
 
-    m_pSerx->purgeTxRx();
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
