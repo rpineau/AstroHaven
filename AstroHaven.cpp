@@ -24,6 +24,8 @@ CAstroHaven::CAstroHaven()
     m_dCurrentElPosition = 0.0;
 
     m_nShutterState = UNKNOWN;
+	m_nCurrentShutterAction = UNKNOWN;
+
 
 #ifdef PLUGIN_DEBUG
 #if defined(SB_WIN_BUILD)
@@ -44,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_4_1620.\n", timestamp);
+    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_05_0940.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -229,7 +231,7 @@ int CAstroHaven::setShutterStateToClosed()
 int CAstroHaven::syncDome(double dAz, double dEl)
 {
 
-    if(m_bIsConnected)
+    if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
 
     m_dCurrentAzPosition = dAz;
@@ -242,7 +244,7 @@ int CAstroHaven::parkDome()
 {
     int nErr = PluginOK;
 
-    if(m_bIsConnected)
+	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
 
     return nErr;
@@ -251,7 +253,7 @@ int CAstroHaven::parkDome()
 
 int CAstroHaven::unparkDome()
 {
-    if(m_bIsConnected)
+	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
 
     syncDome(m_dCurrentAzPosition,m_dCurrentElPosition);
@@ -263,7 +265,7 @@ int CAstroHaven::gotoAzimuth(double dNewAz)
     int nErr = PluginOK;
 
 
-    if(m_bIsConnected)
+	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
 
     m_dCurrentAzPosition = dNewAz;
@@ -544,7 +546,7 @@ int CAstroHaven::isParkComplete(bool &bComplete)
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    if(m_bIsConnected)
+	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
 
     bComplete = true;
@@ -558,7 +560,7 @@ int CAstroHaven::isUnparkComplete(bool &bComplete)
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    if(m_bIsConnected)
+	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
 
     bComplete = true;
@@ -570,7 +572,7 @@ int CAstroHaven::isFindHomeComplete(bool &bComplete)
 {
     int nErr = PluginOK;
 
-    if(m_bIsConnected)
+	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
 
     bComplete = true;
@@ -585,7 +587,7 @@ int CAstroHaven::isFindHomeComplete(bool &bComplete)
 
 double CAstroHaven::getCurrentAz()
 {
-    if(m_bIsConnected)
+	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
     
     return m_dCurrentAzPosition;
@@ -593,7 +595,7 @@ double CAstroHaven::getCurrentAz()
 
 double CAstroHaven::getCurrentEl()
 {
-    if(m_bIsConnected)
+	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED))
         m_pSerx->purgeTxRx();
 
     return m_dCurrentElPosition;
