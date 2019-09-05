@@ -78,6 +78,7 @@ int CAstroHaven::Connect(const char *pszPort)
         return ERR_COMMNOLINK;
 
     m_pSleeper->sleep(2000);
+    m_pSerx->purgeTxRx();
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -228,6 +229,9 @@ int CAstroHaven::setShutterStateToClosed()
 int CAstroHaven::syncDome(double dAz, double dEl)
 {
 
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
+
     m_dCurrentAzPosition = dAz;
     m_dCurrentElPosition = dEl;
     
@@ -238,8 +242,8 @@ int CAstroHaven::parkDome()
 {
     int nErr = PluginOK;
 
-    if(!m_bIsConnected)
-        return NOT_CONNECTED;
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
 
     return nErr;
 
@@ -247,6 +251,9 @@ int CAstroHaven::parkDome()
 
 int CAstroHaven::unparkDome()
 {
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
+
     syncDome(m_dCurrentAzPosition,m_dCurrentElPosition);
     return 0;
 }
@@ -255,8 +262,9 @@ int CAstroHaven::gotoAzimuth(double dNewAz)
 {
     int nErr = PluginOK;
 
-    if(!m_bIsConnected)
-        return NOT_CONNECTED;
+
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
 
     m_dCurrentAzPosition = dNewAz;
     if(m_nShutterState == OPEN)
@@ -536,6 +544,9 @@ int CAstroHaven::isParkComplete(bool &bComplete)
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
+
     bComplete = true;
     return nErr;
 }
@@ -547,6 +558,9 @@ int CAstroHaven::isUnparkComplete(bool &bComplete)
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
+
     bComplete = true;
 
     return nErr;
@@ -556,8 +570,9 @@ int CAstroHaven::isFindHomeComplete(bool &bComplete)
 {
     int nErr = PluginOK;
 
-    if(!m_bIsConnected)
-        return NOT_CONNECTED;
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
+
     bComplete = true;
 
     return nErr;
@@ -570,10 +585,16 @@ int CAstroHaven::isFindHomeComplete(bool &bComplete)
 
 double CAstroHaven::getCurrentAz()
 {
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
+    
     return m_dCurrentAzPosition;
 }
 
 double CAstroHaven::getCurrentEl()
 {
+    if(m_bIsConnected)
+        m_pSerx->purgeTxRx();
+
     return m_dCurrentElPosition;
 }
