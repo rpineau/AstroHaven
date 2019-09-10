@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_05_0940.\n", timestamp);
+    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_09_2010.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -127,7 +127,7 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, int 
 {
     int nErr = PluginOK;
     unsigned long ulBytesRead = 0;
-    unsigned int ulTotalBytesRead = 0;
+    unsigned long ulTotalBytesRead = 0;
     char *pszBufPtr;
 
     memset(pszRespBuffer, 0, (size_t) nBufferLen);
@@ -146,15 +146,16 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, int 
             return nErr;
         }
         if (ulBytesRead !=1) {// timeout
-            if(!ulTotalBytesRead)
-                nErr = BAD_CMD_RESPONSE;
-            else
+            if(ulTotalBytesRead)
                 nErr = PluginOK;
+            else
+                nErr = BAD_CMD_RESPONSE;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             ltime = time(NULL);
             timestamp = asctime(localtime(&ltime));
             timestamp[strlen(timestamp) - 1] = 0;
-            fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, ulTotalBytesRead = %ul\n", timestamp, ulTotalBytesRead);
+            fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, ulTotalBytesRead = %lu\n", timestamp, ulTotalBytesRead);
+            fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, nErr = %d\n", timestamp, nErr);
             fflush(Logfile);
 #endif
             break;
@@ -180,7 +181,7 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     fprintf(Logfile, "[%s] [CAstroHaven::domeCommand] Sending %s\n", timestamp, pszCmd);
     fflush(Logfile);
 #endif
-
+    m_pSerx->purgeTxRx();
     nErr = m_pSerx->writeFile((void *)pszCmd, strlen(pszCmd), nBytesWrite);
     m_pSerx->flushTx();
     if(nErr)
@@ -470,9 +471,16 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
     bComplete = false;
     
     nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-    if(nErr)
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] readResponse error = %d\n", timestamp, nErr);
+        fflush(Logfile);
+#endif
         return nErr;
-    
+    }
 	if(!strlen(szResp))  {//no response.
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		ltime = time(NULL);
@@ -488,7 +496,7 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 	ltime = time(NULL);
 	timestamp = asctime(localtime(&ltime));
 	timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] response : %s\n", timestamp, szResp);
+	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] response : '%s'\n", timestamp, szResp);
 	fflush(Logfile);
 #endif
 
@@ -533,9 +541,18 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
     
     bComplete = false;
     nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-    if(nErr)
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] readResponse error = %d\n", timestamp, nErr);
+        fflush(Logfile);
+#endif
         return nErr;
-	if(!strlen(szResp))  {//no response.
+    }
+
+    if(!strlen(szResp))  {//no response.
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		ltime = time(NULL);
 		timestamp = asctime(localtime(&ltime));
@@ -550,7 +567,7 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 	ltime = time(NULL);
 	timestamp = asctime(localtime(&ltime));
 	timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] response : %s\n", timestamp, szResp);
+	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] response : '%s'\n", timestamp, szResp);
 	fflush(Logfile);
 #endif
 
