@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_09_2010.\n", timestamp);
+    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_10_1230.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -149,7 +149,7 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, int 
             if(ulTotalBytesRead)
                 nErr = PluginOK;
             else
-                nErr = BAD_CMD_RESPONSE;
+                nErr = NO_DATA_TIMEOUT;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             ltime = time(NULL);
             timestamp = asctime(localtime(&ltime));
@@ -190,16 +190,18 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     // only read the response if we expect a response.
     if(pszResult) {
         nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-        if(nErr)
+        if(nErr && nErr != NO_DATA_TIMEOUT)
             return nErr;
-        strncpy(pszResult, szResp, nResultMaxLen);
+		if(strlen(szResp)) {
+			strncpy(pszResult, szResp, nResultMaxLen);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::domeCommand] response : %s\n", timestamp, szResp);
-		fflush(Logfile);
+			ltime = time(NULL);
+			timestamp = asctime(localtime(&ltime));
+			timestamp[strlen(timestamp) - 1] = 0;
+			fprintf(Logfile, "[%s] [CAstroHaven::domeCommand] response : %s\n", timestamp, szResp);
+			fflush(Logfile);
 #endif
+		}
     }
 
     return nErr;
@@ -471,7 +473,7 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
     bComplete = false;
     
     nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-    if(nErr) {
+    if(nErr && nErr != NO_DATA_TIMEOUT) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
@@ -489,7 +491,7 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 		fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] No response\n", timestamp);
 		fflush(Logfile);
 #endif
-		return nErr;
+		return PluginOK;	// we ignore the timeouts
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -541,7 +543,7 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
     
     bComplete = false;
     nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-    if(nErr) {
+    if(nErr && nErr != NO_DATA_TIMEOUT) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
@@ -560,7 +562,7 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 		fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] No response\n", timestamp);
 		fflush(Logfile);
 #endif
-		return nErr;
+		return PluginOK;	// ignore timeouts
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
