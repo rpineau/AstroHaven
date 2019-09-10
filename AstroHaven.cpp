@@ -235,13 +235,6 @@ int CAstroHaven::syncDome(double dAz, double dEl)
 {
 
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::syncDome] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
 
@@ -256,13 +249,6 @@ int CAstroHaven::parkDome()
     int nErr = PluginOK;
 
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::parkDome] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
     return nErr;
@@ -272,13 +258,6 @@ int CAstroHaven::parkDome()
 int CAstroHaven::unparkDome()
 {
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::unparkDome] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
     syncDome(m_dCurrentAzPosition,m_dCurrentElPosition);
@@ -291,13 +270,6 @@ int CAstroHaven::gotoAzimuth(double dNewAz)
 
 
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::gotoAzimuth] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
 
@@ -425,13 +397,6 @@ int CAstroHaven::findHome()
 		return NOT_CONNECTED;
 
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::findHome] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
 		m_pSerx->purgeTxRx();
 	}
 	return nErr;
@@ -471,8 +436,19 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
     }
 
     bComplete = false;
-    
-    nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
+
+	/*
+	switch(m_nCurrentShutterAction) {
+		case OPENING_A:
+			nErr = domeCommand("a", szResp, SERIAL_BUFFER_SIZE);
+			break;
+		case OPENING_B:
+			nErr = domeCommand("b", szResp, SERIAL_BUFFER_SIZE);
+			break;
+		default:
+			break;
+	}
+	 */
     if(nErr && nErr != NO_DATA_TIMEOUT) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
@@ -491,7 +467,7 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 		fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] No response\n", timestamp);
 		fflush(Logfile);
 #endif
-		return PluginOK;	// we ignore the timeouts
+		return PluginOK;	// we ignore the timeouts //  return ERR_CMDFAILED;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -542,7 +518,20 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
         return NOT_CONNECTED;
     
     bComplete = false;
-    nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
+	/*
+	 switch(m_nCurrentShutterAction) {
+		 case CLOSING_B:
+			 nErr = domeCommand("B", szResp, SERIAL_BUFFER_SIZE);
+			 break;
+		 case CLOSING_A:
+			 nErr = domeCommand("A", szResp, SERIAL_BUFFER_SIZE);
+			 break;
+		 default:
+			 break;
+	 }
+	 */
+
+	nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
     if(nErr && nErr != NO_DATA_TIMEOUT) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
@@ -562,7 +551,7 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 		fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] No response\n", timestamp);
 		fflush(Logfile);
 #endif
-		return PluginOK;	// ignore timeouts
+		return PluginOK;	// ignore timeouts //  return ERR_CMDFAILED;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -615,13 +604,6 @@ int CAstroHaven::isParkComplete(bool &bComplete)
         return NOT_CONNECTED;
 
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::isParkComplete] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
     bComplete = true;
@@ -636,13 +618,6 @@ int CAstroHaven::isUnparkComplete(bool &bComplete)
         return NOT_CONNECTED;
 
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::isUnparkComplete] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
 
@@ -656,13 +631,6 @@ int CAstroHaven::isFindHomeComplete(bool &bComplete)
     int nErr = PluginOK;
 
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::isFindHomeComplete] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
 
@@ -679,13 +647,6 @@ int CAstroHaven::isFindHomeComplete(bool &bComplete)
 double CAstroHaven::getCurrentAz()
 {
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::getCurrentAz] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
 
@@ -695,13 +656,6 @@ double CAstroHaven::getCurrentAz()
 double CAstroHaven::getCurrentEl()
 {
 	if(m_bIsConnected && (m_nCurrentShutterAction == OPEN || m_nCurrentShutterAction == CLOSED || m_nCurrentShutterAction == UNKNOWN)) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		ltime = time(NULL);
-		timestamp = asctime(localtime(&ltime));
-		timestamp[strlen(timestamp) - 1] = 0;
-		fprintf(Logfile, "[%s] [CAstroHaven::getCurrentEl] purging data\n", timestamp);
-		fflush(Logfile);
-#endif
         m_pSerx->purgeTxRx();
 	}
 
