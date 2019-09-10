@@ -64,7 +64,8 @@ public:
     int gotoAzimuth(double dNewAz);
     int openShutter();
     int closeShutter();
-
+	int	findHome();
+	
     // command complete functions
     int isGoToComplete(bool &bComplete);
     int isOpenComplete(bool &bComplete);

@@ -263,7 +263,7 @@ int X2Dome::dapiClose(void)
         return ERR_NOLINK;
     }
 
-    nErr =m_AstroHaven.closeShutter();
+    nErr = m_AstroHaven.closeShutter();
     if(nErr)
         return ERR_CMDFAILED;
 
@@ -277,6 +277,7 @@ int X2Dome::dapiPark(void)
     if(!m_bLinked)
         return ERR_NOLINK;
 
+	m_AstroHaven.parkDome();
 
 	return SB_OK;
 }
@@ -288,6 +289,7 @@ int X2Dome::dapiUnpark(void)
     if(!m_bLinked)
         return ERR_NOLINK;
 
+	m_AstroHaven.unparkDome();
 	return SB_OK;
 }
 
@@ -298,6 +300,7 @@ int X2Dome::dapiFindHome(void)
     if(!m_bLinked)
         return ERR_NOLINK;
 
+	m_AstroHaven.findHome();
     return SB_OK;
 }
 
