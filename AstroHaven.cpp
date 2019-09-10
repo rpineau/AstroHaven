@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_10_1230.\n", timestamp);
+    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_10_1305.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -190,7 +190,8 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     // only read the response if we expect a response.
     if(pszResult) {
         nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-        if(nErr && nErr != NO_DATA_TIMEOUT)
+		// if(nErr && nErr != NO_DATA_TIMEOUT)
+        if(nErr)
             return nErr;
 		if(strlen(szResp)) {
 			strncpy(pszResult, szResp, nResultMaxLen);
@@ -437,7 +438,6 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 
     bComplete = false;
 
-	/*
 	switch(m_nCurrentShutterAction) {
 		case OPENING_A:
 			nErr = domeCommand("a", szResp, SERIAL_BUFFER_SIZE);
@@ -448,8 +448,10 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 		default:
 			break;
 	}
-	 */
-    if(nErr && nErr != NO_DATA_TIMEOUT) {
+
+	// nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
+	// if(nErr && nErr != NO_DATA_TIMEOUT) {
+    if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
@@ -467,7 +469,7 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 		fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] No response\n", timestamp);
 		fflush(Logfile);
 #endif
-		return PluginOK;	// we ignore the timeouts //  return ERR_CMDFAILED;
+		return ERR_CMDFAILED;	// PluginOK we ignore the timeouts //  return ERR_CMDFAILED;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -518,7 +520,6 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
         return NOT_CONNECTED;
     
     bComplete = false;
-	/*
 	 switch(m_nCurrentShutterAction) {
 		 case CLOSING_B:
 			 nErr = domeCommand("B", szResp, SERIAL_BUFFER_SIZE);
@@ -529,10 +530,10 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 		 default:
 			 break;
 	 }
-	 */
 
-	nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-    if(nErr && nErr != NO_DATA_TIMEOUT) {
+	// nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
+	// if(nErr && nErr != NO_DATA_TIMEOUT) {
+    if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
@@ -551,7 +552,7 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 		fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] No response\n", timestamp);
 		fflush(Logfile);
 #endif
-		return PluginOK;	// ignore timeouts //  return ERR_CMDFAILED;
+		return ERR_CMDFAILED;	// PluginOK ignore timeouts //  return ERR_CMDFAILED;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -569,7 +570,6 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
     if(strstr(szResp, "Y")) {
         m_nBSideState = CLOSED;
     }
-
 
 	if ( m_nCurrentShutterAction == CLOSING_B && m_nBSideState == CLOSED) {
 		// now close A side
