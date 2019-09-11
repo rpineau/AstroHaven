@@ -1,10 +1,7 @@
-#include <stdio.h>
-#include "../../licensedinterfaces/basicstringinterface.h"
 #include "main.h"
-#include "x2dome.h"
 
 
-#define PLUGIN_NAME "X2Dome SkyRoof"
+#define PLUGIN_NAME "X2Dome AstroHaven"
 
 extern "C" PlugInExport int sbPlugInName2(BasicStringInterface& str)
 {
@@ -34,7 +31,6 @@ extern "C" PlugInExport int sbPlugInFactory2(	const char* pszSelection,
 									pTheSkyXIn,
 									pSleeperIn,
 									pIniUtilIn,
-									pLoggerIn,
 									pIOMutexIn,
 									pTickCountIn);
 

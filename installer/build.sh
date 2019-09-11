@@ -1,7 +1,6 @@
 #!/bin/bash
 
 mkdir -p ROOT/tmp/AstroHaven_X2/
-cp "../AstroHaven.ui" ROOT/tmp/AstroHaven_X2/
 cp "../domelist AstroHaven.txt" ROOT/tmp/AstroHaven_X2/
 cp "../build/Release/libAstroHaven.dylib" ROOT/tmp/AstroHaven_X2/
 

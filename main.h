@@ -4,11 +4,13 @@
 	#define PlugInExport
 #endif
 
+#include <stdio.h>
+#include "x2dome.h"
+
 class SerXInterface;
 class TheSkyXFacadeForDriversInterface;
 class SleeperInterface;
 class BasicIniUtilInterface;
-class LoggerInterface;
 class MutexInterface;
 class TickCountInterface;
 
@@ -21,7 +23,6 @@ extern "C" PlugInExport int sbPlugInFactory(	const char* pszSelection,
 												TheSkyXFacadeForDriversInterface* pTheSkyXIn, 
 												SleeperInterface		* pSleeperIn,
 												BasicIniUtilInterface  * pIniUtilIn,
-												LoggerInterface			* pLoggerIn,
 												MutexInterface			* pIOMutexIn,
 												TickCountInterface		* pTickCountIn,
 												void** ppObjectOut);

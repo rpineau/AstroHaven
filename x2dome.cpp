@@ -1,17 +1,4 @@
-#include <stdio.h>
-#include <string.h>
 #include "x2dome.h"
-#include "../../licensedinterfaces/sberrorx.h"
-#include "../../licensedinterfaces/basicstringinterface.h"
-#include "../../licensedinterfaces/serxinterface.h"
-#include "../../licensedinterfaces/basiciniutilinterface.h"
-#include "../../licensedinterfaces/theskyxfacadefordriversinterface.h"
-#include "../../licensedinterfaces/sleeperinterface.h"
-#include "../../licensedinterfaces/loggerinterface.h"
-#include "../../licensedinterfaces/basiciniutilinterface.h"
-#include "../../licensedinterfaces/mutexinterface.h"
-#include "../../licensedinterfaces/tickcountinterface.h"
-#include "../../licensedinterfaces/serialportparams2interface.h"
 
 
 X2Dome::X2Dome(const char* pszSelection,
@@ -20,7 +7,6 @@ X2Dome::X2Dome(const char* pszSelection,
 					TheSkyXFacadeForDriversInterface*	pTheSkyXForMounts,
 					SleeperInterface*					pSleeper,
 					BasicIniUtilInterface*			pIniUtil,
-					LoggerInterface*					pLogger,
 					MutexInterface*						pIOMutex,
 					TickCountInterface*					pTickCount)
 {
@@ -30,7 +16,6 @@ X2Dome::X2Dome(const char* pszSelection,
 	m_pTheSkyXForMounts				= pTheSkyXForMounts;
 	m_pSleeper						= pSleeper;
 	m_pIniUtil						= pIniUtil;
-	m_pLogger						= pLogger;
 	m_pIOMutex						= pIOMutex;
 	m_pTickCount					= pTickCount;
 
@@ -50,8 +35,6 @@ X2Dome::~X2Dome()
 		delete m_pSleeper;
 	if (m_pIniUtil)
 		delete m_pIniUtil;
-	if (m_pLogger)
-		delete m_pLogger;
 	if (m_pIOMutex)
 		delete m_pIOMutex;
 	if (m_pTickCount)
@@ -95,56 +78,10 @@ int X2Dome::queryAbstraction(const char* pszName, void** ppVal)
 {
     *ppVal = NULL;
 
-    if (!strcmp(pszName, LoggerInterface_Name))
-        *ppVal = GetLogger();
-    else if (!strcmp(pszName, ModalSettingsDialogInterface_Name))
-        *ppVal = dynamic_cast<ModalSettingsDialogInterface*>(this);
-    else if (!strcmp(pszName, X2GUIEventInterface_Name))
-        *ppVal = dynamic_cast<X2GUIEventInterface*>(this);
-    else if (!strcmp(pszName, SerialPortParams2Interface_Name))
+	if (!strcmp(pszName, SerialPortParams2Interface_Name))
         *ppVal = dynamic_cast<SerialPortParams2Interface*>(this);
 
     return SB_OK;
-}
-
-#pragma mark - UI binding
-
-int X2Dome::execModalSettingsDialog()
-{
-    int nErr =SB_OK;
-    X2ModalUIUtil uiutil(this, GetTheSkyXFacadeForDrivers());
-    X2GUIInterface*					ui = uiutil.X2UI();
-    X2GUIExchangeInterface*			dx = NULL;//Comes after ui is loaded
-    bool bPressedOK = false;
-    char szTmpBuf[SERIAL_BUFFER_SIZE];
-
-    if (NULL == ui)
-        return ERR_POINTER;
-
-    if ((nErr =ui->loadUserInterface("AstroHaven.ui", deviceType(), m_nPrivateISIndex)))
-        return nErr;
-
-    if (NULL == (dx = uiutil.X2DX()))
-        return ERR_POINTER;
-
-    memset(szTmpBuf,0,SERIAL_BUFFER_SIZE);
-
-    if(m_bLinked) {
-    }
-    else {
-    }
-    X2MutexLocker ml(GetMutex());
-
-    //Display the user interface
-    if ((nErr =ui->exec(bPressedOK)))
-        return nErr;
-
-    return nErr;
-
-}
-
-void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
-{
 }
 
 //
@@ -240,8 +177,6 @@ int X2Dome::dapiOpen(void)
     X2MutexLocker ml(GetMutex());
 
     if(!m_bLinked) {
-        snprintf(mLogBuffer,ND_LOG_BUFFER_SIZE,"[X2Dome::dapiOpen] NOT CONNECTED");
-        m_pLogger->out(mLogBuffer);
         return ERR_NOLINK;
     }
 
@@ -258,8 +193,6 @@ int X2Dome::dapiClose(void)
     X2MutexLocker ml(GetMutex());
 
     if(!m_bLinked) {
-        snprintf(mLogBuffer,ND_LOG_BUFFER_SIZE,"[X2Dome::dapiClose] NOT CONNECTED");
-        m_pLogger->out(mLogBuffer);
         return ERR_NOLINK;
     }
 

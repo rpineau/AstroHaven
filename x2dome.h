@@ -1,8 +1,19 @@
-#include "AstroHaven.h"
+#include <stdio.h>
+#include <string.h>
+
 #include "../../licensedinterfaces/domedriverinterface.h"
 #include "../../licensedinterfaces/serialportparams2interface.h"
-#include "../../licensedinterfaces/modalsettingsdialoginterface.h"
-#include "../../licensedinterfaces/x2guiinterface.h"
+#include "../../licensedinterfaces/sberrorx.h"
+#include "../../licensedinterfaces/basicstringinterface.h"
+#include "../../licensedinterfaces/serxinterface.h"
+#include "../../licensedinterfaces/basiciniutilinterface.h"
+#include "../../licensedinterfaces/theskyxfacadefordriversinterface.h"
+#include "../../licensedinterfaces/sleeperinterface.h"
+#include "../../licensedinterfaces/basiciniutilinterface.h"
+#include "../../licensedinterfaces/mutexinterface.h"
+#include "../../licensedinterfaces/tickcountinterface.h"
+
+#include "AstroHaven.h"
 
 
 class SerXInterface;
@@ -35,7 +46,8 @@ class TickCountInterface;
 
 Use this example to write an X2Dome driver.
 */
-class X2Dome: public DomeDriverInterface, public SerialPortParams2Interface, public ModalSettingsDialogInterface, public X2GUIEventInterface
+class X2Dome: public DomeDriverInterface, public SerialPortParams2Interface
+// public ModalSettingsDialogInterface
 {
 public:
 
@@ -46,7 +58,6 @@ public:
 					TheSkyXFacadeForDriversInterface* pTheSkyXForMounts,
 					SleeperInterface*				pSleeper,
 					BasicIniUtilInterface*			pIniUtil,
-					LoggerInterface*					pLogger,
 					MutexInterface*					pIOMutex,
 					TickCountInterface*				pTickCount);
 	virtual ~X2Dome();
@@ -65,9 +76,6 @@ public:
 	virtual int									terminateLink(void)						;
 	virtual bool								isLinked(void) const					;
 	//@}
-
-    virtual int initModalSettingsDialog(void){return 0;}
-    virtual int execModalSettingsDialog(void);
 
 	/*!\name HardwareInfoInterface Implementation
 	See HardwareInfoInterface.*/
@@ -115,16 +123,12 @@ public:
     virtual bool					isParityFixed() const		{return true;}
 
 
-    virtual void uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent);
-
-
 private:
 
 	SerXInterface 									*	GetSerX() {return m_pSerX; }
 	TheSkyXFacadeForDriversInterface				*	GetTheSkyXFacadeForDrivers() {return m_pTheSkyXForMounts;}
 	SleeperInterface								*	GetSleeper() {return m_pSleeper; }
 	BasicIniUtilInterface							*	GetSimpleIniUtil() {return m_pIniUtil; }
-	LoggerInterface									*	GetLogger() {return m_pLogger; }
 	MutexInterface									*	GetMutex()  {return m_pIOMutex;}
 	TickCountInterface								*	GetTickCountInterface() {return m_pTickCount;}
 
@@ -132,7 +136,6 @@ private:
 	TheSkyXFacadeForDriversInterface				*	m_pTheSkyXForMounts;
 	SleeperInterface								*	m_pSleeper;
 	BasicIniUtilInterface							*	m_pIniUtil;
-	LoggerInterface									*	m_pLogger;
 	MutexInterface									*	m_pIOMutex;
 	TickCountInterface								*	m_pTickCount;
 

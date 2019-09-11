@@ -34,13 +34,11 @@ fi
 
 cp "./domelist AstroHaven.txt" "$TheSkyX_Path/Resources/Common/Miscellaneous Files/"
 cp "./libAstroHaven.so" "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/"
-cp "./AstroHaven.ui" "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/"
 
 app_owner=`/usr/bin/stat -c "%u" "$TheSkyX_Path" | xargs id -n -u`
 if [ ! -z "$app_owner" ]; then
 	chown $app_owner "$TheSkyX_Path/Resources/Common/Miscellaneous Files/domelist AstroHaven.txt"
 	chown $app_owner "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/libAstroHaven.so"
-	chown $app_owner "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/AstroHaven.ui"
 fi
 chmod  755 "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/libAstroHaven.so"
 
