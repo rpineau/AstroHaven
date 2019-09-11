@@ -14,7 +14,7 @@ class MutexInterface;
 class BasicIniUtilInterface;
 class TickCountInterface;
 
-#define DRIVER_VERSION      1.04
+#define DRIVER_VERSION      1.05
 
 #define PARENT_KEY			"AstroHaven"
 #define CHILD_KEY_PORTNAME	"PortName"

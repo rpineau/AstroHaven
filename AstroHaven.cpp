@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_10_1305.\n", timestamp);
+    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_11_1335.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -123,7 +123,7 @@ void CAstroHaven::Disconnect()
 }
 
 
-int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, int TimeOut)
+int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsigned long nExpectRespLen, int TimeOut)
 {
     int nErr = PluginOK;
     unsigned long ulBytesRead = 0;
@@ -161,7 +161,7 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, int 
             break;
         }
         ulTotalBytesRead += ulBytesRead;
-    } while (*pszBufPtr++ != 0x00 && ulTotalBytesRead < nBufferLen );
+    } while (ulTotalBytesRead < nExpectRespLen && ulTotalBytesRead < nBufferLen );
 
     return nErr;
 }
