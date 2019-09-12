@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_11_1915.\n", timestamp);
+	fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_12_1545.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -129,12 +129,13 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsi
     unsigned long ulBytesRead = 0;
     unsigned long ulTotalBytesRead = 0;
     char *pszBufPtr;
+	int nRetries = 0;
 
     memset(pszRespBuffer, 0, (size_t) nBufferLen);
     pszBufPtr = pszRespBuffer;
 
     do {
-        nErr = m_pSerx->readFile(pszBufPtr, 1, ulBytesRead, TimeOut);
+        nErr = m_pSerx->readFile(pszBufPtr, nExpectRespLen, ulBytesRead, TimeOut);
         if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             ltime = time(NULL);
@@ -145,21 +146,37 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsi
 #endif
             return nErr;
         }
-        if (ulBytesRead !=1) {// timeout
-            if(ulTotalBytesRead)
-                nErr = PluginOK;
-            else
-                nErr = NO_DATA_TIMEOUT;
+
+        if (!ulBytesRead) {// timeout
+			if(nRetries >= 2) {
+				if(ulTotalBytesRead)
+					nErr = PluginOK;
+				else
+					nErr = NO_DATA_TIMEOUT;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-            ltime = time(NULL);
-            timestamp = asctime(localtime(&ltime));
-            timestamp[strlen(timestamp) - 1] = 0;
-            fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, ulTotalBytesRead = %lu\n", timestamp, ulTotalBytesRead);
-            fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, nErr = %d\n", timestamp, nErr);
-            fflush(Logfile);
+				ltime = time(NULL);
+				timestamp = asctime(localtime(&ltime));
+				timestamp[strlen(timestamp) - 1] = 0;
+				fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, ulTotalBytesRead = %lu\n", timestamp, ulTotalBytesRead);
+				fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, nErr = %d\n", timestamp, nErr);
+				fflush(Logfile);
 #endif
-            break;
-        }
+				break;
+			}
+			nRetries++;
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+				ltime = time(NULL);
+				timestamp = asctime(localtime(&ltime));
+				timestamp[strlen(timestamp) - 1] = 0;
+				fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, retring\n", timestamp);
+				fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, nRetries = %d\n", timestamp, nRetries);
+				fflush(Logfile);
+#endif
+		}
+		else
+			nRetries = 0;
+
+		pszBufPtr += ulBytesRead;
         ulTotalBytesRead += ulBytesRead;
     } while (ulTotalBytesRead < nExpectRespLen && ulTotalBytesRead < nBufferLen );
 
@@ -187,23 +204,22 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     if(nErr)
         return nErr;
 
-    // only read the response if we expect a response.
-    if(pszResult) {
-        nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-		// if(nErr && nErr != NO_DATA_TIMEOUT)
-        if(nErr)
-            return nErr;
-		if(strlen(szResp)) {
-			strncpy(pszResult, szResp, nResultMaxLen);
+	nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
+	if(nErr && nErr != NO_DATA_TIMEOUT)
+		return nErr;
+
+	if(strlen(szResp)) {
+		strncpy(pszResult, szResp, nResultMaxLen);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			ltime = time(NULL);
-			timestamp = asctime(localtime(&ltime));
-			timestamp[strlen(timestamp) - 1] = 0;
-			fprintf(Logfile, "[%s] [CAstroHaven::domeCommand] response : %s\n", timestamp, szResp);
-			fflush(Logfile);
+		ltime = time(NULL);
+		timestamp = asctime(localtime(&ltime));
+		timestamp[strlen(timestamp) - 1] = 0;
+		fprintf(Logfile, "[%s] [CAstroHaven::domeCommand] response : %s\n", timestamp, szResp);
+		fflush(Logfile);
 #endif
-		}
     }
+	else
+		memset(pszResult, 0, nResultMaxLen);
 
     return nErr;
 }
@@ -430,7 +446,6 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 	fflush(Logfile);
 #endif
 
-
 	if(m_nCurrentShutterAction == OPEN) {
         bComplete = true;
         return nErr;
@@ -449,9 +464,7 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 			break;
 	}
 
-	// nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-	// if(nErr && nErr != NO_DATA_TIMEOUT) {
-    if(nErr) {
+	if(nErr && nErr != NO_DATA_TIMEOUT) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
@@ -518,7 +531,15 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
     
     if(!m_bIsConnected)
         return NOT_CONNECTED;
-    
+
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+	ltime = time(NULL);
+	timestamp = asctime(localtime(&ltime));
+	timestamp[strlen(timestamp) - 1] = 0;
+	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] In States -> m_nCurrentShutterAction = %d,  m_nASideState = %d, m_nBSideState : %d\n", timestamp, m_nCurrentShutterAction, m_nASideState, m_nBSideState);
+	fflush(Logfile);
+#endif
+
     bComplete = false;
 	 switch(m_nCurrentShutterAction) {
 		 case CLOSING_B:
@@ -531,9 +552,7 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 			 break;
 	 }
 
-	// nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
-	// if(nErr && nErr != NO_DATA_TIMEOUT) {
-    if(nErr) {
+	if(nErr && nErr != NO_DATA_TIMEOUT) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
