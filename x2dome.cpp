@@ -96,7 +96,7 @@ void X2Dome::deviceInfoNameShort(BasicStringInterface& str) const
 
 void X2Dome::deviceInfoNameLong(BasicStringInterface& str) const
 {
-    str = "Astro Haven Control";
+    str = "Astro Haven Clamshell dome Control";
 }
 
 void X2Dome::deviceInfoDetailedDescription(BasicStringInterface& str) const
@@ -111,7 +111,7 @@ void X2Dome::deviceInfoDetailedDescription(BasicStringInterface& str) const
 
 void X2Dome::deviceInfoModel(BasicStringInterface& str)
 {
-    str = "RoR";
+    str = "Astro Haven Clamshel";
 }
 
 //

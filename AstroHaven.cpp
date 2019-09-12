@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_11_1335.\n", timestamp);
+    fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_11_1915.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
