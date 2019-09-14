@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_12_1545.\n", timestamp);
+	fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version 2019_09_13_1930.\n", timestamp);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -221,7 +221,7 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
 	else
 		memset(pszResult, 0, nResultMaxLen);
 
-    return nErr;
+    return PluginOK;
 }
 
 
@@ -464,7 +464,7 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 			break;
 	}
 
-	if(nErr && nErr != NO_DATA_TIMEOUT) {
+	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
@@ -552,7 +552,7 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 			 break;
 	 }
 
-	if(nErr && nErr != NO_DATA_TIMEOUT) {
+	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
