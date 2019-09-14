@@ -141,7 +141,7 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsi
             ltime = time(NULL);
             timestamp = asctime(localtime(&ltime));
             timestamp[strlen(timestamp) - 1] = 0;
-            fprintf(Logfile, "[%s] [CAstroHaven::readResponse] readFile error\n", timestamp);
+            fprintf(Logfile, "[%s] [CAstroHaven::readResponse] readFile error %d\n", timestamp, nErr);
             fflush(Logfile);
 #endif
             return nErr;
@@ -442,7 +442,9 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 	ltime = time(NULL);
 	timestamp = asctime(localtime(&ltime));
 	timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] In States -> m_nCurrentShutterAction = %d,  m_nASideState = %d, m_nBSideState : %d\n", timestamp, m_nCurrentShutterAction, m_nASideState, m_nBSideState);
+	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] In States :  m_nCurrentShutterAction = %d\n", timestamp, m_nCurrentShutterAction);
+	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete]              m_nASideState = %d\n", timestamp, m_nASideState);
+	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete]              m_nBSideState : %d\n", timestamp, m_nBSideState);
 	fflush(Logfile);
 #endif
 
@@ -469,7 +471,7 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] readResponse error = %d\n", timestamp, nErr);
+        fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] domeCommand error = %d\n", timestamp, nErr);
         fflush(Logfile);
 #endif
         return nErr;
@@ -516,7 +518,9 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 	ltime = time(NULL);
 	timestamp = asctime(localtime(&ltime));
 	timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] Out States -> m_nCurrentShutterAction = %d,  m_nASideState = %d, m_nBSideState : %d\n", timestamp, m_nCurrentShutterAction, m_nASideState, m_nBSideState);
+	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] Out States : m_nCurrentShutterAction = %d\n", timestamp, m_nCurrentShutterAction);
+	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete]              m_nASideState = %d\n", timestamp, m_nASideState);
+	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete]              m_nBSideState : %d\n", timestamp, m_nBSideState);
 	fprintf(Logfile, "[%s] [CAstroHaven::isOpenComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
 	fflush(Logfile);
 #endif
@@ -536,7 +540,9 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 	ltime = time(NULL);
 	timestamp = asctime(localtime(&ltime));
 	timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] In States -> m_nCurrentShutterAction = %d,  m_nASideState = %d, m_nBSideState : %d\n", timestamp, m_nCurrentShutterAction, m_nASideState, m_nBSideState);
+	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] In States :  m_nCurrentShutterAction = %d\n", timestamp, m_nCurrentShutterAction);
+	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete]              m_nASideState = %d\n", timestamp, m_nASideState);
+	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete]              m_nBSideState : %d\n", timestamp, m_nBSideState);
 	fflush(Logfile);
 #endif
 
@@ -557,7 +563,7 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] readResponse error = %d\n", timestamp, nErr);
+        fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] domeCommand error = %d\n", timestamp, nErr);
         fflush(Logfile);
 #endif
         return nErr;
@@ -606,7 +612,9 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 	ltime = time(NULL);
 	timestamp = asctime(localtime(&ltime));
 	timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] Out States -> m_nCurrentShutterAction = %d,  m_nASideState = %d, m_nBSideState : %d\n", timestamp, m_nCurrentShutterAction, m_nASideState, m_nBSideState);
+	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] Out States : m_nCurrentShutterAction = %d\n", timestamp, m_nCurrentShutterAction);
+	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete]              m_nASideState = %d\n", timestamp, m_nASideState);
+	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete]              m_nBSideState : %d\n", timestamp, m_nBSideState);
 	fprintf(Logfile, "[%s] [CAstroHaven::isCloseComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
 	fflush(Logfile);
 #endif

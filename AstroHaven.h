@@ -35,7 +35,7 @@
 
 #define PLUGIN_DEBUG 2
 
-#define SERIAL_BUFFER_SIZE 4096
+#define SERIAL_BUFFER_SIZE 256
 #define MAX_TIMEOUT 250
 #define ND_LOG_BUFFER_SIZE 256
 // error codes
