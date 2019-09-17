@@ -33,12 +33,15 @@
 #include "../../licensedinterfaces/loggerinterface.h"
 #include "../../licensedinterfaces/sleeperinterface.h"
 
-#define DRIVER_VERSION      1.10
+#define DRIVER_VERSION      1.11
+
 #define PLUGIN_DEBUG 2
 
 #define SERIAL_BUFFER_SIZE 256
 #define MAX_TIMEOUT 1000
 #define ND_LOG_BUFFER_SIZE 256
+#define INTER_COMMAND_WAIT	500
+
 // error codes
 enum AstroHavenErrors {PluginOK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, COMMAND_FAILED, NO_DATA_TIMEOUT};
 
