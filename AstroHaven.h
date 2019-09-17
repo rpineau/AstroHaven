@@ -33,6 +33,8 @@
 #include "../../licensedinterfaces/loggerinterface.h"
 #include "../../licensedinterfaces/sleeperinterface.h"
 
+#include "StopWatch.h"
+
 #define DRIVER_VERSION      1.11
 
 #define PLUGIN_DEBUG 2
@@ -101,6 +103,8 @@ protected:
     SerXInterface   *m_pSerx;
 
     int             m_nShutterState;
+
+	CStopWatch		m_cmdDelayTimer;
 
 #ifdef PLUGIN_DEBUG
     std::string m_sLogfilePath;

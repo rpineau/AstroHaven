@@ -15,6 +15,7 @@
 		933C741C1E5F6BA2007E5CB3 /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = 933C74161E5F6BA2007E5CB3 /* main.h */; };
 		933C741D1E5F6BA2007E5CB3 /* x2dome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 933C74171E5F6BA2007E5CB3 /* x2dome.cpp */; };
 		933C741E1E5F6BA2007E5CB3 /* x2dome.h in Headers */ = {isa = PBXBuildFile; fileRef = 933C74181E5F6BA2007E5CB3 /* x2dome.h */; };
+		935E3AA6233189E400E984F7 /* StopWatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 935E3AA5233189E400E984F7 /* StopWatch.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		933C74161E5F6BA2007E5CB3 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		933C74171E5F6BA2007E5CB3 /* x2dome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = x2dome.cpp; sourceTree = "<group>"; };
 		933C74181E5F6BA2007E5CB3 /* x2dome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x2dome.h; sourceTree = "<group>"; };
+		935E3AA5233189E400E984F7 /* StopWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopWatch.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 		932CF7C51E5F638B00E04860 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				935E3AA5233189E400E984F7 /* StopWatch.h */,
 				933C74131E5F6BA2007E5CB3 /* AstroHaven.cpp */,
 				933C74141E5F6BA2007E5CB3 /* AstroHaven.h */,
 				933C74151E5F6BA2007E5CB3 /* main.cpp */,
@@ -90,6 +93,7 @@
 			files = (
 				933C741A1E5F6BA2007E5CB3 /* AstroHaven.h in Headers */,
 				933C741C1E5F6BA2007E5CB3 /* main.h in Headers */,
+				935E3AA6233189E400E984F7 /* StopWatch.h in Headers */,
 				933C741E1E5F6BA2007E5CB3 /* x2dome.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

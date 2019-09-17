@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="..\AstroHaven.h" />
     <ClInclude Include="..\main.h" />
+    <ClInclude Include="..\StopWatch.h" />
     <ClInclude Include="..\x2dome.h" />
   </ItemGroup>
   <ItemGroup>

@@ -82,6 +82,8 @@ int CAstroHaven::Connect(const char *pszPort)
     m_pSleeper->sleep(2000);
     m_pSerx->purgeTxRx();
 
+	m_cmdDelayTimer.Reset();
+
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
@@ -207,7 +209,7 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     int nErr = PluginOK;
     char szResp[SERIAL_BUFFER_SIZE];
     unsigned long  nBytesWrite;
-
+	float dDelayMs;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -217,8 +219,18 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     fflush(Logfile);
 #endif
     m_pSerx->purgeTxRx();
+	// do we need to wait ?
+	/*
+	if(m_cmdDelayTimer.GetElapsedSeconds()<INTER_COMMAND_WAIT) {
+		dDelayMs = INTER_COMMAND_WAIT - (m_cmdDelayTimer.GetElapsedSeconds() *1000);
+		if(dDelayMs>0)
+			m_pSleeper->sleep(dDelayMs);
+	}
+	 */
+	
     nErr = m_pSerx->writeFile((void *)pszCmd, strlen(pszCmd), nBytesWrite);
     m_pSerx->flushTx();
+	m_cmdDelayTimer.Reset();
     if(nErr)
         return nErr;
 
