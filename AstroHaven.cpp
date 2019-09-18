@@ -79,9 +79,7 @@ int CAstroHaven::Connect(const char *pszPort)
     if(!m_bIsConnected)
         return ERR_COMMNOLINK;
 
-    m_pSleeper->sleep(2000);
     m_pSerx->purgeTxRx();
-
 	m_cmdDelayTimer.Reset();
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
