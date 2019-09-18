@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version %3.2f build 2019_09_18_1120.\n", timestamp, DRIVER_VERSION);
+	fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version %3.2f build 2019_09_18_1120, INTER_COMMAND_WAIT=%d.\n", timestamp, DRIVER_VERSION, INTER_COMMAND_WAIT);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
