@@ -35,12 +35,12 @@
 
 #include "StopWatch.h"
 
-#define DRIVER_VERSION      1.11
+#define DRIVER_VERSION      1.12
 
 #define PLUGIN_DEBUG 2
 
 #define SERIAL_BUFFER_SIZE 256
-#define MAX_TIMEOUT 1000
+#define MAX_TIMEOUT 500
 #define ND_LOG_BUFFER_SIZE 256
 #define INTER_COMMAND_WAIT	500
 

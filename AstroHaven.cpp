@@ -46,7 +46,7 @@ CAstroHaven::CAstroHaven()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-	fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version %3.2f build 2019_09_17_1420.\n", timestamp, DRIVER_VERSION);
+	fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Version %3.2f build 2019_09_18_1120.\n", timestamp, DRIVER_VERSION);
     fprintf(Logfile, "[%s] [CAstroHaven::CAstroHaven] Constructor Called.\n", timestamp);
     fflush(Logfile);
 #endif
@@ -192,8 +192,8 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsi
 		timestamp = asctime(localtime(&ltime));
 		timestamp[strlen(timestamp) - 1] = 0;
 		fprintf(Logfile, "[%s] [CAstroHaven::readResponse] pszRespBuffer = '%s'\n", timestamp, pszRespBuffer);
-		fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, ulBytesRead = %lu\n", timestamp, ulBytesRead);
-		fprintf(Logfile, "[%s] [CAstroHaven::readResponse] Timeout, ulTotalBytesRead = %lu\n", timestamp, ulTotalBytesRead);
+		fprintf(Logfile, "[%s] [CAstroHaven::readResponse] ulBytesRead = %lu\n", timestamp, ulBytesRead);
+		fprintf(Logfile, "[%s] [CAstroHaven::readResponse] ulTotalBytesRead = %lu\n", timestamp, ulTotalBytesRead);
 		fflush(Logfile);
 #endif
     } while (ulTotalBytesRead < nExpectRespLen && ulTotalBytesRead < nBufferLen );
@@ -218,13 +218,11 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
 #endif
     m_pSerx->purgeTxRx();
 	// do we need to wait ?
-	/*
 	if(m_cmdDelayTimer.GetElapsedSeconds()<INTER_COMMAND_WAIT) {
 		dDelayMs = INTER_COMMAND_WAIT - (m_cmdDelayTimer.GetElapsedSeconds() *1000);
 		if(dDelayMs>0)
 			m_pSleeper->sleep(dDelayMs);
 	}
-	 */
 	
     nErr = m_pSerx->writeFile((void *)pszCmd, strlen(pszCmd), nBytesWrite);
     m_pSerx->flushTx();
@@ -243,7 +241,7 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
 #endif
 		return nErr;
 	}
-	
+
 	if(strlen(szResp)) {
 		strncpy(pszResult, szResp, nResultMaxLen);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -253,7 +251,7 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
 		fprintf(Logfile, "[%s] [CAstroHaven::domeCommand] response : %s\n", timestamp, szResp);
 		fflush(Logfile);
 #endif
-    }
+	}
 	else {
 		memset(pszResult, 0, nResultMaxLen);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -374,7 +372,6 @@ int CAstroHaven::openShutter()
     if(strstr(szResp, "x")) {
         m_nASideState = OPEN;
 		m_nCurrentShutterAction = OPENING_B;
-		m_pSleeper->sleep(INTER_COMMAND_WAIT);
         // if we need to sequence the shutter, we start opening the other side here.
 		nErr = domeCommand("b", szResp, SERIAL_BUFFER_SIZE);
 		if(nErr)
@@ -429,7 +426,6 @@ int CAstroHaven::closeShutter()
     if(strstr(szResp, "Y")) {
         m_nASideState = CLOSED;
 		m_nCurrentShutterAction = CLOSING_A;
-		m_pSleeper->sleep(INTER_COMMAND_WAIT);
         // if we need to sequence the shutter, we start closing the other side here.
 		nErr = domeCommand("A", szResp, SERIAL_BUFFER_SIZE);
 		if(nErr)
@@ -546,7 +542,6 @@ int CAstroHaven::isOpenComplete(bool &bComplete)
 		}
 
 		if ( m_nCurrentShutterAction == OPENING_A && m_nASideState == OPEN) {
-			m_pSleeper->sleep(INTER_COMMAND_WAIT);
 			// now open B side
 			nErr = domeCommand("b", szResp, SERIAL_BUFFER_SIZE);
 			if(nErr)
@@ -640,7 +635,6 @@ int CAstroHaven::isCloseComplete(bool &bComplete)
 		}
 
 		if ( m_nCurrentShutterAction == CLOSING_B && m_nBSideState == CLOSED) {
-			m_pSleeper->sleep(INTER_COMMAND_WAIT);
 			// now close A side
 			nErr = domeCommand("A", szResp, SERIAL_BUFFER_SIZE);
 			if(nErr)
