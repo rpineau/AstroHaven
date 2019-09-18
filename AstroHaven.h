@@ -85,7 +85,7 @@ public:
 
 protected:
 
-    int             readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsigned long nExpectRespLen = 1, int TimeOut = MAX_TIMEOUT);
+    int             readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsigned long nExpectRespLen = 1, int nTimeOut = MAX_TIMEOUT);
     int             domeCommand(const char *pszCmd, char *pszResult, int nResultMaxLen);
     int             setShutterStateToClosed();
     

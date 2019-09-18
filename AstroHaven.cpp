@@ -123,7 +123,7 @@ void CAstroHaven::Disconnect()
 }
 
 
-int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsigned long nExpectRespLen, int TimeOut)
+int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsigned long nExpectRespLen, int nTimeOut)
 {
     int nErr = PluginOK;
     unsigned long ulBytesRead = 0;
@@ -143,7 +143,7 @@ int CAstroHaven::readResponse(char *pszRespBuffer, unsigned int nBufferLen, unsi
 		fflush(Logfile);
 #endif
 
-        nErr = m_pSerx->readFile(pszBufPtr, nExpectRespLen, ulBytesRead, TimeOut);
+        nErr = m_pSerx->readFile(pszBufPtr, nExpectRespLen, ulBytesRead, nTimeOut);
         if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             ltime = time(NULL);
