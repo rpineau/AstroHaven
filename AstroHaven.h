@@ -37,12 +37,12 @@
 
 #define DRIVER_VERSION      1.12
 
-#define PLUGIN_DEBUG 2
+// #define PLUGIN_DEBUG 2
 
 #define SERIAL_BUFFER_SIZE 256
 #define MAX_TIMEOUT 500
 #define ND_LOG_BUFFER_SIZE 256
-#define INTER_COMMAND_WAIT	500
+#define INTER_COMMAND_WAIT	500		// tested with 100 and 250 and that was causing timeout, 500 works well.
 
 // error codes
 enum AstroHavenErrors {PluginOK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, COMMAND_FAILED, NO_DATA_TIMEOUT};
