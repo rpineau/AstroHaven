@@ -207,7 +207,7 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     int nErr = PluginOK;
     char szResp[SERIAL_BUFFER_SIZE];
     unsigned long  nBytesWrite;
-	float dDelayMs;
+	int dDelayMs;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -219,7 +219,7 @@ int CAstroHaven::domeCommand(const char *pszCmd, char *pszResult, int nResultMax
     m_pSerx->purgeTxRx();
 	// do we need to wait ?
 	if(m_cmdDelayTimer.GetElapsedSeconds()<INTER_COMMAND_WAIT) {
-		dDelayMs = INTER_COMMAND_WAIT - (m_cmdDelayTimer.GetElapsedSeconds() *1000);
+		dDelayMs = INTER_COMMAND_WAIT - int(m_cmdDelayTimer.GetElapsedSeconds() *1000);
 		if(dDelayMs>0)
 			m_pSleeper->sleep(dDelayMs);
 	}
